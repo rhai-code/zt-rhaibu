@@ -1,6 +1,6 @@
 # Workshop Common Rules
 
-**Version**: 1.2
+**Version**: 1.3
 
 Shared contracts for all workshop-* skills in the OODA pipeline. Every workshop skill
 MUST reference this file and follow these rules.
@@ -238,6 +238,33 @@ location. Skills communicate through:
 - RAC artifacts (requirements, decisions, designs)
 - Git repos (showroom content, automation infrastructure)
 - Structured reports (validation tables, evidence maps)
+
+---
+
+## 7a. Subagent Isolation (REQUIRED — context hygiene)
+
+Auto-accept runs burn tokens quadratically when verbose tool traffic (browser
+snapshots, build logs, schema dumps, reference-catalog reads) lands in the main
+conversation, because every later tool call re-sends it.
+
+**Rule: high-traffic work runs in subagents; the main agent orchestrates and
+keeps only structured results.**
+
+- Delegate when a step produces >~50 lines of tool output per action, or reads
+  large reference material: browser automation runs, screenshot capture,
+  per-module content drafting, cluster diagnostics, reference-catalog/example
+  reads, schema dumps.
+- **Pass** the subagent everything it needs (paths, requirements, attributes,
+  credentials-free coordinates) — subagents share nothing from the parent
+  conversation.
+- **Return** a structured summary only (pass/fail tables, file paths, evidence
+  locations, error excerpts ≤10 lines). No raw snapshots, logs, or page dumps.
+- **Never delegate** the decisions: RAC authoring/ratification, fix-loop
+  categorization (content vs infra vs environment), publish, and anything the
+  user must see verbatim. The main agent stays the source of truth and re-reads
+  a subagent's output files before acting on its claims.
+- verify-content and catalog-builder are already subagent-orchestrated by
+  design — invoke them as-is, don't inline their agents' work.
 
 ---
 

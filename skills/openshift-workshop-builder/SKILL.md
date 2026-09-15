@@ -1,7 +1,10 @@
 ---
 id: openshift-workshop-builder
 name: OpenShift Workshop Builder
-description: Build OpenShift and OpenShift AI workshop content in Red Hat Showroom format using Antora and AsciiDoc, with docs-backed steps, real browser screenshots, and interactive lab features.
+description: >
+  Antora/AsciiDoc Showroom scaffolding patterns: directory structure, config templates,
+  AsciiDoc authoring rules, build process. Invoked by workshop-do; not a pipeline phase
+  itself. Triggers: "showroom", "antora scaffold", "lab module", "screenshot manifest".
 triggers:
   keywords:
     - "workshop"
@@ -55,34 +58,19 @@ Reference implementation: `https://github.com/rhpds/ai-lightning-wordswarm-showr
 
 ### Prose Style Rules
 
-Full reference with AsciiDoc examples: `${CLAUDE_SKILL_DIR}/references/prose-style.md`
+Canonical text with AsciiDoc examples: `skills/docs/WORKSHOP-COMMON-RULES.md` §8
+and `${CLAUDE_SKILL_DIR}/references/prose-style.md`. In one line each (check IDs
+P.1–P.4 are used by verify-content):
 
-**P.1 — Module summary format** (REQUIRED)  
-Every module page ends with `== Module summary` using three bold-label sections: `**What you accomplished:**` (3 past-tense bullets), `**Key takeaways:**` (3 present-tense bullets), `**Next steps:**` (prose only — never bullets).
-
-**P.2 — Exercise transitions** (REQUIRED)  
-Every exercise boundary (between `== Exercise N` ending and `== Exercise N+1` heading) must have at least one bridging sentence after the `=== Verify` block. Use one of: callback-then-pivot ("Now that you've X, let's Y"), problem-then-purpose (state the gap, then what closes it), or forward reference ("You will explore this in Exercise N").
-
-**P.3 — Workaround handling** (REQUIRED)  
-Any workaround or known deviation follows: NOTE/WARNING _before_ the command → "This is expected." → one sentence why → then the command block. Never put the explanation after the command. Complex optional depth goes in a `[%collapsible]` block.
-
-**P.4 — Admonition type** (REQUIRED)  
-- `TIP` — orientation, persona framing, practical shortcuts  
-- `NOTE` — non-determinism, expected friction, key conceptual asides  
-- `IMPORTANT` — structural, safety, or ordering constraints  
-- `WARNING` — destructive or irreversible operations
+**P.1 — Module summary** (REQUIRED): `== Module summary` with bold labels `**What you accomplished:**` (3 past-tense bullets), `**Key takeaways:**` (3 present-tense bullets), `**Next steps:**` (prose only).
+**P.2 — Exercise transitions** (REQUIRED): ≥1 bridging sentence after `=== Verify` before the next `== Exercise`.
+**P.3 — Workaround handling** (REQUIRED): NOTE/WARNING before the command → "This is expected." → one sentence why → command. Depth goes in `[%collapsible]`.
+**P.4 — Admonition type** (REQUIRED): TIP=orientation/shortcuts, NOTE=non-determinism/friction, IMPORTANT=structural/safety/ordering, WARNING=destructive/irreversible.
 
 ### YAML/Config Callout Rules
 
-Full reference with AsciiDoc examples: `${CLAUDE_SKILL_DIR}/references/yaml-callouts.md`
-
-**C.1 — YAML manifest callouts** (RECOMMENDED)  
-Non-executable `[source,yaml]` / `[source,json]` blocks that represent manifests applied to the cluster (`oc apply`, `oc create`, `oc process`) SHOULD use numbered callouts to annotate opaque or important fields. Rules:
-- Maximum 5 callouts per block — more is noise.
-- Each callout is one sentence: `<1> *Bold label* — explanation.`
-- Use `[source,yaml,subs="attributes,callouts"]` when the block also has `{attribute}` placeholders.
-- Never add callouts to `[source,role="execute"]` blocks — the markers would be copied into the terminal.
-- Skip callouts on trivial config, expected output listings, or blocks where the surrounding prose already explains every field.
+Canonical text with examples: `${CLAUDE_SKILL_DIR}/references/yaml-callouts.md`.
+**C.1 — YAML manifest callouts** (RECOMMENDED): applied manifests (`oc apply/create/process`) SHOULD get ≤5 one-sentence callouts on opaque fields; never on `role="execute"` blocks; skip trivial config or blocks the prose already explains.
 
 ---
 

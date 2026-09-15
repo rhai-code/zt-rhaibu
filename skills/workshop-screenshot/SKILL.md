@@ -1,14 +1,10 @@
 ---
 name: workshop-screenshot
 description: >
-  Adaptive screenshot capture helper for workshop content. Reads AsciiDoc pages and
-  RAC requirements to determine which screenshots are needed, captures them via
-  playwright-cli from a live cluster, embeds image:: references into .adoc pages,
-  and rebuilds. Use when someone wants to "capture screenshots", "take screenshots",
-  "update screenshots", "screenshot the workshop", "recapture images", or "refresh
-  workshop images". Called by workshop-act during acceptance testing and optionally
-  by workshop-do when a cluster is available. Not intended for standalone use outside
-  the OODA pipeline.
+  Capture screenshots from a live cluster via playwright-cli and embed them into
+  showroom AsciiDoc content; writes RAC screenshot evidence. Called by workshop-act
+  during acceptance testing. Triggers: "capture screenshots", "workshop screenshots",
+  "recapture images", "refresh screenshots".
 triggers:
   keywords:
     - "capture screenshots"
@@ -41,6 +37,11 @@ requirements to determine what to capture rather than relying on a static list.
 - Use **openshift-ai-3-3-expert** for RHOAI dashboard navigation patterns.
 - After embedding screenshots, recommend running **verify-content** to
   validate the updated content against Red Hat quality standards.
+- **Subagent isolation (WORKSHOP-COMMON-RULES §7a):** each capture flow group is one
+  subagent job — it owns the playwright session, writes screenshots to
+  `assets/images/`, and returns only the capture table (filename | page | status |
+  size) + failure excerpts. The main agent does the shot-list planning and the
+  RAC evidence artifact from those results.
 - See `skills/docs/WORKSHOP-COMMON-RULES.md` for shared AsciiDoc, image, security,
   and quality rules.
 - Reference `${CLAUDE_SKILL_DIR}/references/capture-patterns.md` for reusable

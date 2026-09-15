@@ -1,19 +1,11 @@
 ---
 name: workshop-act
 description: >
-  Deploy a scaffolded workshop to a prelude OpenShift cluster, validate it end-to-end,
-  then publish the validated content to p-zero-lessons.
-  Deploys the showroom via its Helm wrapper (helm upgrade --install), builds and serves
-  Antora content, runs browser-based tests using playwright-cli, validates each RAC
-  requirement's acceptance criteria, and opens a PR into red-hat-ai-dev/p-zero-lessons.
-  Implements a fix-and-test loop: any failed test or unmet requirement triggers another
-  iteration until all checks pass. Use when someone wants to "deploy the workshop",
-  "test the workshop", "validate workshop requirements", "run workshop on prelude",
-  "workshop smoke test", "check workshop quality", "workshop CI loop", "verify the
-  workshop works", "deploy to prelude", "test on cluster", "workshop acceptance testing",
-  "workshop fix loop", "publish workshop", or "PR to p-zero-lessons". This is the fourth
-  and final step of the OODA workshop pipeline (Observe -> Orient -> Do -> Act -> Publish).
-  Do NOT use for planning (workshop-orient) or scaffolding code (workshop-do).
+  Phase 4 of the OODA workshop pipeline (Act): deploy to a prelude cluster, run
+  browser tests + verify-content quality gate, fix-and-test loop until RAC acceptance
+  criteria pass, then PR to p-zero-lessons (publish). Triggers: "deploy workshop",
+  "test workshop", "validate workshop", "workshop prelude", "publish workshop".
+  Do NOT use for planning (workshop-orient) or scaffolding (workshop-do).
 triggers:
   keywords:
     - "workshop act"
@@ -43,7 +35,10 @@ criteria pass, then signal ready for human-in-the-loop review.
 - Use **workshop-screenshot** for capturing and embedding screenshots into AsciiDoc content.
 - Run **verify-content** as a quality gate after content and screenshots are ready.
 - See `skills/docs/WORKSHOP-COMMON-RULES.md` for shared AsciiDoc, image, security,
-  and quality rules.
+  and quality rules — including §7a subagent isolation: delegate the high-traffic
+  steps here (playwright test runs, screenshot capture, cluster diagnostics) to
+  subagents returning only pass/fail tables + evidence paths; the main agent keeps
+  the fix-loop categorization and the final report.
 
 ## Prerequisites
 
@@ -213,6 +208,10 @@ This spawns parallel agents per module, checking against Red Hat quality standar
 - Red Hat style guide (product names, acronym expansion)
 - Technical accuracy (undefined attributes, broken xrefs)
 
+On **fix-loop re-runs** (step 6), pass `modules: [<changed .adoc files>]` in the
+invocation so only the changed modules are re-reviewed — unchanged modules keep
+their prior findings.
+
 **Severity handling:**
 - **Critical** / **High** — must fix before proceeding to the fix-and-test loop
 - **Warning** / **Info** — report in the validation table but do not block
@@ -224,7 +223,10 @@ If any test fails, identify the failure category and fix:
 **Content issue** (AsciiDoc error, wrong instructions, missing page):
 1. Fix the `.adoc` file in the content repo
 2. Rebuild: `make build`
-3. Go to step 5
+3. Go to step 5 — **delta mode**: re-test only the failed requirement(s) and the
+   module page(s) they belong to; do not re-run tests for requirements that passed
+   in a prior iteration (their evidence is still valid — the fix touched only the
+   files listed in this iteration's fix step)
 
 **Infrastructure issue** (showroom pod won't start, wrong values, content build fails):
 1. Fix `values-<slug>.yaml` in the automation repo (or the content repo if the on-cluster
@@ -232,7 +234,7 @@ If any test fails, identify the failure category and fix:
 2. Redeploy: `make deploy` (helm upgrade --install) — or `oc rollout restart deploy/showroom
    -n showroom-<slug>` to re-run the init containers against updated content
 3. Wait for the rollout to complete
-4. Go to step 3
+4. Go to step 3 — infra changes invalidate ALL evidence, so re-run the full suite
 
 **Environment issue** (cluster problem, insufficient resources, external dependency):
 1. Report the issue to the user with diagnostics
@@ -242,6 +244,8 @@ If any test fails, identify the failure category and fix:
 - Maximum 5 iterations before escalating to human-in-the-loop
 - Track which requirements passed/failed per iteration
 - Detect no-progress (same tests failing the same way) and bail out early
+- Delta re-test (content fixes) vs full re-test (infra fixes) as above — this keeps
+  per-iteration cost proportional to what actually changed
 
 ### 7. Clean up and report
 
