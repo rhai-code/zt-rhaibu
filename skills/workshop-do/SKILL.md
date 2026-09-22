@@ -1,17 +1,10 @@
 ---
 name: workshop-do
 description: >
-  Scaffold workshop content and infrastructure code from RAC requirements. Produces
-  two separate repos: (1) a zt-<slug>-showroom Antora/AsciiDoc content repo following
-  the ai-lightning-wordswarm-showroom pattern, and (2) a zt-<slug>-automation infra
-  repo that deploys the showroom by referencing the reusable zt-showroom-deployer Helm
-  chart (a thin values-<slug>.yaml + Makefile wrapper). Use when someone wants to "scaffold a workshop", "generate
-  workshop code", "build workshop content", "create showroom content", "create workshop
-  infrastructure", "implement the workshop", "write the workshop code", "antora
-  scaffold", "showroom scaffold", "gitops workshop", "helm charts for workshop", or
-  "workshop implementation". This is the third step of the OODA workshop pipeline
-  (Observe -> Orient -> Do -> Act). Do NOT use for analyzing demos (workshop-observe),
-  planning workshops (workshop-orient), or deploying/testing (workshop-act).
+  Phase 3 of the OODA workshop pipeline (Do): scaffold zt-<slug>-showroom (Antora/AsciiDoc
+  content) and zt-<slug>-automation (thin Helm wrapper) from RAC requirements. Triggers:
+  "workshop do", "scaffold workshop", "showroom scaffold", "workshop implementation".
+  Do NOT use for demos (workshop-observe), planning (workshop-orient), deploy/test (workshop-act).
 triggers:
   keywords:
     - "workshop do"
@@ -32,18 +25,19 @@ Scaffold two codebases from RAC requirements: a content repo and an infrastructu
 
 ## Skill coordination
 
-- **Delegate content scaffolding** to the `openshift-workshop-builder` skill. It owns
-  the Antora/showroom structure, file templates, AsciiDoc patterns, and build process.
-  This skill orchestrates it with the right parameters, then adds workshop-specific content.
-- Use the **OpenShift 4.21 Expert** skill for OpenShift-specific lab steps.
-- Use the **OpenShift AI 3.3 Expert** skill for RHOAI-specific lab steps.
+- **Delegate content scaffolding** to the `openshift-workshop-builder` skill (Antora/showroom
+  structure, templates, AsciiDoc patterns, build); use **openshift-4-21-expert** for
+  OpenShift lab steps and **openshift-ai-3-3-expert** for RHOAI lab steps.
 - Reference `https://github.com/rhpds/ai-lightning-wordswarm-showroom` as the content exemplar.
 - The infrastructure repo is a thin **Helm CLI wrapper** around the reusable
   `zt-showroom-deployer` chart (source at `~/git/zt-showroom-deployer/`). The chart value
   contract, showroom pod anatomy, and wrapper layout are documented in
   `${CLAUDE_SKILL_DIR}/references/infra-patterns.md`.
 - See `skills/docs/WORKSHOP-COMMON-RULES.md` for shared AsciiDoc, image, security,
-  and quality rules.
+  and quality rules — including §7a subagent isolation: delegate the high-traffic
+  steps here (per-module content drafting with the expert skills, exemplar-repo
+  reads, `npm install`/`make build` output) to subagents and keep only file
+  lists + build pass/fail in the main conversation.
 
 ## Prerequisites
 

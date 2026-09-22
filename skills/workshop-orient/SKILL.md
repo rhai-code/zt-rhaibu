@@ -1,16 +1,10 @@
 ---
 name: workshop-orient
 description: >
-  Plan an OpenShift/RHOAI workshop using Requirements As Code (RAC). Takes observations
-  from workshop-observe (or freeform input) and produces structured RAC artifacts:
-  requirements, decisions, and designs in the rac/ directory. Uses the asdecided-core CLI to
-  scaffold and validate artifacts. Use when someone wants to "plan a workshop", "create
-  workshop requirements", "orient on workshop content", "define workshop scope", "write
-  workshop RAC", "decide workshop structure", or "design a workshop". Also trigger for
-  "workshop planning", "lab design", "module breakdown", or "workshop architecture".
-  This is the second step of the OODA workshop pipeline (Observe -> Orient -> Do -> Act).
-  Do NOT use for writing actual workshop content (use workshop-do) or for deploying
-  workshops (use workshop-act).
+  Phase 2 of the OODA workshop pipeline (Orient): plan a workshop as RAC artifacts
+  (requirements, decisions, designs) via the decided CLI. Triggers: "workshop orient",
+  "workshop plan", "workshop requirements", "workshop design", "rac workshop".
+  Do NOT use for writing content (workshop-do) or deploying (workshop-act).
 triggers:
   keywords:
     - "workshop orient"
@@ -38,6 +32,10 @@ contract between planning and implementation.
   worst-first until validation and relationship checks pass. (`decided-artifacts` covers
   authoring/linking conventions.)
 - Use `decided schema <type>` to get real artifact schemas. Never invent fields or sections.
+- **Subagent isolation (WORKSHOP-COMMON-RULES §7a):** schema dumps and long
+  `decided validate`/`review` output are high-traffic — run them in a subagent and
+  keep only the finding list in the main conversation. Never delegate the
+  ratification interview itself.
 - See `skills/docs/WORKSHOP-COMMON-RULES.md` for shared AsciiDoc, image, security,
   and quality rules.
 

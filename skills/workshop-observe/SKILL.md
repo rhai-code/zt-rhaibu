@@ -1,14 +1,9 @@
 ---
 name: workshop-observe
 description: >
-  Analyze demo application screenshots, keyframes, or screen recordings to extract
-  workshop-relevant observations: user flows, features demonstrated, UI components,
-  concepts taught, and interaction patterns. Use when someone provides images of a
-  demo app and wants to plan a workshop around it, or says "observe this demo",
-  "analyze these screenshots for a workshop", "extract features from these keyframes",
-  or "create observations from this demo". Also trigger when images are dropped into
-  the conversation alongside mentions of workshops, labs, or training content. This is
-  the first step of the OODA workshop pipeline (Observe -> Orient -> Do -> Act).
+  Phase 1 of the OODA workshop pipeline (Observe): analyze demo screenshots/keyframes
+  into a factual observation document in the RAC repo. Triggers: "workshop observe",
+  "observe demo", "analyze screenshots", "keyframes", "extract features".
   Do NOT use for general image analysis unrelated to workshop planning.
 triggers:
   keywords:
@@ -30,7 +25,10 @@ Analyze demo application visuals to produce a structured observation document th
 feeds the Orient step of the OODA workshop pipeline.
 
 See `skills/docs/WORKSHOP-COMMON-RULES.md` for shared AsciiDoc, image, security,
-and quality rules.
+and quality rules — including §7a subagent isolation: for large screenshot sets,
+batch per-image analysis in a subagent that returns only the "Screenshots
+Analyzed" table (one row per image); the main agent does the flow reconstruction
+and writes the observation document itself.
 
 ## Goal
 
