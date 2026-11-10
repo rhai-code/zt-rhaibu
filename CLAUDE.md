@@ -1,5 +1,10 @@
 # zt-rhaibu — OODA Workshop Factory
 
+> **DEPRECATED (2026-11-10):** this factory is superseded by `~/git/ph-rhaibu/`,
+> which produces publishing-house format workshops (one `ph-<slug>/` repo per
+> workshop instead of separate rac/showroom/automation repos). Migration runbook:
+> `ph-rhaibu/skills/docs/PH-MIGRATION-RUNBOOK.md`. Keep this repo for reference only.
+
 Workshop creation pipeline based on the OODA loop. Each phase is a skill in `skills/`.
 
 ## Pipeline
